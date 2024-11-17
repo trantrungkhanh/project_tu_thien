@@ -6,6 +6,9 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 import { formatCurrency, formatDateTime } from '../../../services/Ultis'
+import { PDFExport } from '@progress/kendo-react-pdf';
+import ReactDOM from 'react-dom';
+import Report from '../../export/template';
 
 
 const UserManagementPage = () => {
@@ -68,6 +71,26 @@ const UserManagementPage = () => {
     const handleChangeRowsPerPage = (event) => {
         setRowsPerPage(parseInt(event.target.value, 10));
         setPage(0);  // Reset trang về 0 khi thay đổi số lượng dòng mỗi trang
+    };
+
+    const pdfExportComponent = React.useRef(null);
+
+    const handleExportPDF = (campaignId) => {
+        const campaignData = campaigns.find(campaign => campaign.id === campaignId);
+        const container = document.createElement('div');
+        //container.style.display = 'none';
+        document.body.appendChild(container);
+
+        ReactDOM.render(
+            <PDFExport ref={pdfExportComponent} paperSize="A4">
+                <Report campaign={campaignData}/>
+            </PDFExport>,
+            container,
+            () => {
+                pdfExportComponent.current.save();
+                document.body.removeChild(container); // Xóa container sau khi export
+            }
+        );
     };
 
     React.useEffect(() => {
@@ -133,7 +156,7 @@ const UserManagementPage = () => {
                                     <IconButton color="secondary" onClick={() => handleDelete(campaign.id)}>
                                         <DeleteIcon />
                                     </IconButton>
-                                    <IconButton color="secondary" onClick={() => handleDelete(campaign.id)}>
+                                    <IconButton color="secondary" onClick={() => handleExportPDF(campaign.id)}>
                                         <ExitToAppIcon />
                                     </IconButton>
                                 </TableCell>

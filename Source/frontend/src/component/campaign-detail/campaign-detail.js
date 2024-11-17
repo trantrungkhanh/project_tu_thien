@@ -114,7 +114,7 @@ export default function CampaignDetail() {
 
         ReactDOM.render(
             <PDFExport ref={pdfExportComponent} paperSize="A4">
-                <Report campaign={campaignData} />
+                <Report campaign={campaignData}/>
             </PDFExport>,
             container,
             () => {
@@ -122,7 +122,6 @@ export default function CampaignDetail() {
                 document.body.removeChild(container); // Xóa container sau khi export
             }
         );
-        //pdfExportComponent.current.save();
     };
 
     useEffect(() => {
@@ -187,7 +186,6 @@ export default function CampaignDetail() {
                                 <ImageSlider />
                             </Box>
                         </Grid>
-
                         {/* Phần Nội dung Chiến dịch */}
                         <Grid item xs={12} md={6} sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold', fontSize: '2.0rem' }}>

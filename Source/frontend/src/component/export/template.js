@@ -1,8 +1,9 @@
 import React from "react";
+import { formatCurrency, formatDateTime } from '../../services/Ultis'
 
 const Report = ({ campaign }) => {
   return (
-    <div style={styles.container}>
+    <div className="export-pdf" style={styles.container} >
       {/* Header */}
       <div style={styles.header}>
         <h1>Báo cáo Tình Hình Chiến Dịch</h1>
@@ -27,19 +28,19 @@ const Report = ({ campaign }) => {
             </tr>
             <tr>
               <th style={styles.th}>Ngân sách dự kiến</th>
-              <td style={styles.td}>{campaign.budget_requirement} VND</td>
+              <td style={styles.td}>{formatCurrency(campaign.budget_requirement)}</td>
             </tr>
             <tr>
               <th style={styles.th}>Ngân sách hiện tại</th>
-              <td style={styles.td}>{campaign.budget} VND</td>
+              <td style={styles.td}>{formatCurrency(campaign.budget)}</td>
             </tr>
             <tr>
               <th style={styles.th}>Thời gian bắt đầu</th>
-              <td style={styles.td}>{campaign.started_at}</td>
+              <td style={styles.td}>{formatDateTime(campaign.started_at)}</td>
             </tr>
             <tr>
               <th style={styles.th}>Thời gian kết thúc</th>
-              <td style={styles.td}>{campaign.ended_at}</td>
+              <td style={styles.td}>{formatDateTime(campaign.ended_at)}</td>
             </tr>
           </tbody>
         </table>
@@ -62,8 +63,8 @@ const Report = ({ campaign }) => {
               <tr key={index}>
                 <td style={styles.td}>{index + 1}</td>
                 <td style={styles.td}>{donor.account_id}</td>
-                <td style={styles.td}>{donor.amount} VND</td>
-                <td style={styles.td}>{donor.created_at}</td>
+                <td style={styles.td}>{formatCurrency(donor.amount)}</td>
+                <td style={styles.td}>{formatDateTime(donor.created_at)}</td>
               </tr>
             ))}
           </tbody>
@@ -75,7 +76,7 @@ const Report = ({ campaign }) => {
         <h3>Tóm tắt</h3>
         <p>
           Chiến dịch "{campaign.name}" đã nhận được sự ủng hộ từ nhiều cá nhân và tổ chức.
-          Ngân sách hiện tại đạt {Math.round((campaign.budget_requirement / campaign.budget) * 100)}% so với mục tiêu.
+          Ngân sách hiện tại đạt {Math.round((campaign.budget / campaign.budget_requirement) * 100)}% so với mục tiêu.
           Chúng tôi sẽ tiếp tục kêu gọi sự đóng góp và cam kết sử dụng ngân sách hiệu quả để đạt được mục tiêu.
         </p>
       </div>
@@ -97,6 +98,7 @@ const styles = {
     borderRadius: "8px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
     lineHeight: "1.6",
+    fontFamily: "Roboto !important" ,
     color: "#333",
   },
   header: {
@@ -138,6 +140,7 @@ const styles = {
     fontSize: "0.9em",
     color: "#666",
   },
+  
 };
 
 export default Report;
