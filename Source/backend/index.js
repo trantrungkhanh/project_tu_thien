@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 const mysql = require('./database/mysql')
 const routes = require('./modules/routes');
+const cron = require('node-cron');
 
 const app = express();
 
@@ -16,6 +17,10 @@ console.log(bcrypt.hashSync('password', 8))
 for (const [path, router] of Object.entries(routes)) {
     app.use(path, router);
 }
+
+cron.schedule('* * * * *', () => {
+    console.log('Chạy một tác vụ mỗi phút');
+});
 
 
 const PORT = 5000;
