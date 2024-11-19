@@ -80,7 +80,6 @@ const UserManagementPage = () => {
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data.data.account_list)
                     setUsers(data.data.account_list);
                     setLoading(false)
                 } else {

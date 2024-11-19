@@ -3,7 +3,6 @@ const mysql = require('../mysql'); // Kết nối đến DB của bạn
 
 // Lưu thông tin người dùng sau khi OTP hợp lệ
 async function saveDonation(donationInfo) {
-    console.log(donationInfo)
     const created_at = new Date(Date.now())
     const result = await mysql.execSql('INSERT INTO donation (account_id, amount, campaign_id, transfer_type, status, created_at, full_name, address, city, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [donationInfo.account_id, donationInfo.amount, donationInfo.campaign_id, donationInfo.transfer_type, 0, created_at, donationInfo.full_name, donationInfo.address, donationInfo.city, donationInfo.state]);

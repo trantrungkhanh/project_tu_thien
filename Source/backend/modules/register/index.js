@@ -33,7 +33,6 @@ router.post('/', async (req, res) => {
         
         res.status(200).json({ message: 'Tạo tài khoản thành công! Vui lòng đăng nhập' });
     } catch (error) {
-        console.log(error)
         res.status(500).json({ message: 'Lỗi tạo tài khoản không thành công', error });
     }
 });

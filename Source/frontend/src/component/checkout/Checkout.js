@@ -49,7 +49,6 @@ const banks = Object.entries(BanksObject).map(([key, value]) => ({
   code: key
 }));
 
-console.log(banks)
 const FormGrid = styled(Grid)(() => ({
   display: 'flex',
   flexDirection: 'column',
@@ -265,7 +264,6 @@ function GetPaymentForm(data) {
   const [cardNumber, setCardNumber] = React.useState('');
   const [cvv, setCvv] = React.useState('');
   const [expirationDate, setExpirationDate] = React.useState('');
-  console.log(data)
 
   const handlePaymentTypeChange = (event) => {
     setPaymentType(event.target.value);
@@ -664,7 +662,6 @@ export default function Checkout(props) {
 
     fetchData();
 
-    console.log(donationInfo)
   }, []);
 
   if (loading) {

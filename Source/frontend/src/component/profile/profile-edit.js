@@ -45,7 +45,6 @@ const ProfileEditPage = () => {
 
     const handleChange = (event) => {
         setSelectedBank(event.target.value);
-        console.log('Ngân hàng đã chọn:', event.target.value);
     };
     // Hàm để xử lý khi nhấn vào menu
     const handleMenuClick = (menu) => {
@@ -71,7 +70,6 @@ const ProfileEditPage = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Upload successful:', result);
             } else {
                 console.error('Upload failed');
             }

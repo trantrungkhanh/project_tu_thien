@@ -12,7 +12,6 @@ router.post('/', async (req, res) => {
     await campaignTable.saveCampaignNews({ campaign_id: campaignId, content_1: content })
     const listDonate = await donationTable.getDonationByCampaignId(campaignId)
     if (listDonate.length > 0) {
-        console.log(listDonate)
         const recipients = listDonate.map(account => account.email)
         let transporter = nodemailer.createTransport({
             service: 'gmail',

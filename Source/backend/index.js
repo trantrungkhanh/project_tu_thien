@@ -12,7 +12,6 @@ app.use(cors()); // Thêm dòng này để bật CORS
 app.use(express.json());
 
 mysql.setup()
-console.log(bcrypt.hashSync('password', 8))
 // Đăng ký các route
 for (const [path, router] of Object.entries(routes)) {
     app.use(path, router);

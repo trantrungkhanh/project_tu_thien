@@ -153,7 +153,6 @@ const CampaignManagementPage = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Upload successful:', result);
                 setLoadingCreatCampaign(false)
                 navigate(0)
             } else {
@@ -189,7 +188,6 @@ const CampaignManagementPage = () => {
 
             if (response.ok) {
                 const result = await response.json();
-                console.log('Upload successful:', result);
                 setLoadingUpdateCampaign(false)
                 navigate(0)
             } else {

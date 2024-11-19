@@ -14,13 +14,11 @@ import ThumbUpAltRoundedIcon from '@mui/icons-material/ThumbUpAltRounded';
 
 
 const Highlights = React.forwardRef((props, ref) => {
-  console.log(props)
   const [visibleArticles, setVisibleArticles] = React.useState([]);
   const [intervalId, setIntervalId] = React.useState(null);
 
   // Hàm để chọn 9 item ngẫu nhiên
   const getRandomItems = (items) => {
-    console.log(items)
     const shuffled = [...items].sort(() => 0.5 - Math.random()); // Xáo trộn mảng
     return shuffled.slice(0, 9); // Lấy 9 item đầu tiên
   };

@@ -66,7 +66,6 @@ export default function Charity({ data, ref }) {
 
       <Box sx={{ width: '100%' }}>
         {data.map((charity, index) => (
-          console.log(charity),
           <Accordion
             key={index}
             expanded={expanded === `panel${index}`}

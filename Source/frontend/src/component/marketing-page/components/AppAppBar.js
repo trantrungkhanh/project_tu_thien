@@ -62,7 +62,6 @@ export default function AppAppBar({ onCharityClick, onChartClick, onTestimonialC
 
           if (response.ok) {
             const data = await response.json();
-            console.log(data.data.charity)
             if (data.data.charity[0].status === 1) {
               setIsCharityLive(true);
             }
@@ -81,7 +80,6 @@ export default function AppAppBar({ onCharityClick, onChartClick, onTestimonialC
 
   const navigate = useNavigate();
   const handleSignInClick = () => {
-    console.log(location.pathname)
     localStorage.setItem('prev_location', location.pathname);
     navigate('/sign-in'); // Chuyển hướng đến trang đăng ký
   };

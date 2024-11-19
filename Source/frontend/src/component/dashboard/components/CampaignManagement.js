@@ -59,11 +59,6 @@ const UserManagementPage = () => {
             console.error('Error:', error);
         }
     }
-
-    const handleExportData = (id) => {
-        console.log("Chỉnh sửa người dùng có ID:", id);
-    };
-
     const handleChangePage = (event, newPage) => {
         setPage(newPage);
     };
@@ -114,7 +109,6 @@ const UserManagementPage = () => {
                 }
             } catch (error) {
                 setLoading(true)
-                console.log(false)
             }
         };
 

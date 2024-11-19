@@ -35,7 +35,6 @@ router.post('/', async (req, res) => {
         </div>
         `
     };
-    console.log(mailOptions)
     await transporter.sendMail(mailOptions);
     return res.json({
         code: 200

@@ -19,12 +19,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/', upload.array('files', 10), async (req, res) => {
-    console.log(req.body)
     const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
 
     // find charity by account_id
     const charity = await charityTable.getCharityByAccountId(req.body.account_id)
-    console.log(charity)
     if (charity[0]) {
         //insert campaign
         const charity_id = charity[0].id
