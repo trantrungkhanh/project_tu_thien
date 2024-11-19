@@ -18,18 +18,12 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import VolunteerActivismIcon from '@mui/icons-material/VolunteerActivism';
 
 const mainListItems = [
-  { text: 'Trang chủ', icon: <HomeRoundedIcon />, value: 'home' },
   { text: 'Quản lí chiến dịch', icon: <CampaignIcon />, value: 'campaign_management' },
   { text: 'Quản lí tổ chức từ thiện', icon: <BusinessIcon />, value: 'charity_management'},
   { text: 'Quản lí người dùng', icon: <ManageAccountsIcon />, value: 'user_management'},
   { text: 'Quản lí quyên góp', icon: <VolunteerActivismIcon />, value: 'donate_management'},
 ];
 
-const secondaryListItems = [
-  { text: 'Cài đặt', icon: <SettingsRoundedIcon /> },
-  { text: 'Về chúng tôi', icon: <InfoRoundedIcon /> },
-  { text: 'Đóng góp ý kiến', icon: <HelpRoundedIcon /> },
-];
 
 export default function MenuContent(onMenuClick) {
   const [selectedIndex, setSelectedIndex] = React.useState(null);

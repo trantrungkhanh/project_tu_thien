@@ -51,7 +51,7 @@ module.exports = {
     },
 
     async getCampaignByCharityId(charityId) {
-        results = await mysql.execSql('SELECT * FROM campaign WHERE charity_id = ? AND deleted_at is null', [charityId]);
+        results = await mysql.execSql('SELECT * FROM campaign WHERE charity_id = ? AND deleted_at is null order by created_at desc', [charityId]);
         return results;
     },
 
@@ -76,7 +76,7 @@ module.exports = {
     },
 
     async getAllCampaignAdmin() {
-        results = await mysql.execSql('SELECT campaign.*, charity.name as charity_name FROM campaign LEFT JOIN charity ON campaign.charity_id = charity.id');
+        results = await mysql.execSql('SELECT campaign.*, charity.name as charity_name FROM campaign LEFT JOIN charity ON campaign.charity_id = charity.id order by campaign.status asc, campaign.created_at desc');
         return results;
     },
     

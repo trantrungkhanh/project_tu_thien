@@ -49,8 +49,6 @@ export default function Dashboard(props) {
 
   const renderContent = () => {
     switch (selectedContent) {
-      case 'home':
-        return <MainGrid />;
       case 'user_management':
         return <UserManagement />;
       case 'campaign_management':
@@ -60,7 +58,7 @@ export default function Dashboard(props) {
       case 'donate_management':
         return <DonateManagement />;
       default:
-        return <MainGrid />;
+        return <CampaignManagement />;
     }
   };
 

@@ -24,6 +24,8 @@ const ProfileEditPage = () => {
     const [bankAccount, setBankAccount] = React.useState('');
     const [momoAccount, setMomoAccount] = React.useState('');
     const [charityData, setCharityData] = React.useState('');
+    const [isCharity, setIsCharity] = React.useState(true);
+    const [countdown, setCountdown] = useState(5);
     const navigate = useNavigate();
 
     const { accountId } = useParams();
@@ -99,6 +101,11 @@ const ProfileEditPage = () => {
                 return;
             }
 
+            if (password === oldPassword) {
+                setMessageUpdatePassword('Mật khẩu mới không được trùng mật khẩu cũ');
+                return;
+            }
+
             setLoading(true); // Bắt đầu loading
             setMessageUpdatePassword(''); // Xóa thông báo cũ
             const response = await fetch('http://localhost:5000/api/update-password', {
@@ -110,10 +117,22 @@ const ProfileEditPage = () => {
             });
 
             if (response.ok) {
-                setMessageUpdatePassword('Cập nhật mật khẩu thành công!');
+                setMessageUpdatePassword('Cập nhật mật khẩu thành công! ');
+                let count = 5;
+                const intervalId = setInterval(() => {
+                    count -= 1;
+                    setCountdown(count);
+                    if (count === 0) {
+                        clearInterval(intervalId);
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user_info");
+                        navigate('/sign-in'); // Điều hướng về trang đăng nhập
+                    }
+                }, 1000);
             } else {
                 const result = await response.json();
                 setMessageUpdatePassword(result.message);
+                setCountdown(0)
             }
         } catch (error) {
             setMessageUpdatePassword('An error occurred. Please try again.');
@@ -140,19 +159,19 @@ const ProfileEditPage = () => {
 
             if (response.ok) {
                 setMessageUpdateUserInfo('Cập nhật thông tin thành công!');
+                setLoading(false); // Kết thúc loading
+                userInfo.full_name = fullName;
+                userInfo.email = email;
+                localStorage.removeItem("user_info");
+                localStorage.setItem("user_info", JSON.stringify(userInfo));
             } else {
                 const result = await response.json();
                 setMessageUpdateUserInfo(result.message);
+                setLoading(false); // Kết thúc loading
             }
         } catch (error) {
             setMessageUpdateUserInfo('An error occurred. Please try again.');
-        } finally {
             setLoading(false); // Kết thúc loading
-            userInfo.full_name = fullName;
-            userInfo.email = email;
-            localStorage.removeItem("user_info");
-            localStorage.setItem("user_info", JSON.stringify(userInfo));
-
         }
 
     }
@@ -185,7 +204,10 @@ const ProfileEditPage = () => {
                 });
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data.data.charity[0])
+                    if (data.data.charity.length === 0) {
+                        setIsCharity(false);
+                        return;
+                    }
                     setCharityData(data.data.charity[0])
                     setCharityName(data.data.charity[0].name)
                     setBankAccount(data.data.charity[0].bank_account)
@@ -247,19 +269,22 @@ const ProfileEditPage = () => {
                     Đổi mật khẩu
                 </Button>
 
-                <Button
-                    onClick={() => handleMenuClick('changeCharityInfo')}
-                    fullWidth
-                    sx={{
-                        backgroundColor: selectedMenu === 'changeCharityInfo' ? '#b58449' : '#e0e0e0',
-                        color: selectedMenu === 'changeCharityInfo' ? '#ffffff' : '#000000',
-                        '&:hover': {
-                            backgroundColor: selectedMenu === 'changeCharityInfo' ? '#584840' : '#d5d5d5',
-                        },
-                    }}
-                >
-                    Cập nhật thông tin tổ chức từ thiện
-                </Button>
+                {isCharity && (
+                    <Button
+                        onClick={() => handleMenuClick('changeCharityInfo')}
+                        fullWidth
+                        sx={{
+                            backgroundColor: selectedMenu === 'changeCharityInfo' ? '#b58449' : '#e0e0e0',
+                            color: selectedMenu === 'changeCharityInfo' ? '#ffffff' : '#000000',
+                            '&:hover': {
+                                backgroundColor: selectedMenu === 'changeCharityInfo' ? '#584840' : '#d5d5d5',
+                            },
+                        }}
+                    >
+                        Cập nhật thông tin tổ chức từ thiện
+                    </Button>
+                )}
+
             </Box>
 
             {/* Phần nội dung bên phải */}
@@ -348,9 +373,16 @@ const ProfileEditPage = () => {
                         />
                         {messageUpdatePassword && (
                             <>
-                                <Typography variant="h6" mb={2}>{messageUpdatePassword}</Typography>
+                                <Typography variant="h6" mb={2}>{messageUpdatePassword} </Typography>
+                                {countdown > 0 && (
+                                    <>
+                                        <Typography variant="h6" mb={2}>Chuyển hướng về trang đăng nhập sau {countdown} giây... </Typography>
+
+                                    </>
+                                )}
                             </>
                         )}
+
                         <Button variant="text" sx={{
                             mt: 2,
                             color: 'white',

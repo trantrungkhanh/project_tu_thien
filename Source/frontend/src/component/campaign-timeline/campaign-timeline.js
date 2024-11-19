@@ -11,39 +11,16 @@ import { useNavigate } from 'react-router-dom';
 import callProtectedApi from '../../services/ProtectedApi';
 import { formatCurrency, formatDateTime } from '../../services/Ultis'
 import TimelineOppositeContent from '@mui/lab/TimelineOppositeContent';
-
-// Sample campaigns data
-const campaignsData = [
-  { id: 1, name: 'Chiến dịch A' },
-  { id: 2, name: 'Chiến dịch B' },
-  { id: 3, name: 'Chiến dịch C' },
-];
-
-// Sample timeline data
-const timelineData = {
-  1: [
-    { date: '2024-11-01', content: 'Bắt đầu chiến dịch' },
-    { date: '2024-11-03', content: 'Quyên góp lần đầu' },
-  ],
-  2: [
-    { date: '2024-10-15', content: 'Chiến dịch khởi động' },
-  ],
-  3: [
-    { date: '2024-09-01', content: 'Gây quỹ' },
-    { date: '2024-10-01', content: 'Kết thúc giai đoạn một' },
-  ],
-};
+import { CircularProgress } from '@mui/material';
 
 function CampaignTimelinePage() {
   const [selectedCampaign, setSelectedCampaign] = useState(7);
-  const [newTimelineContent, setNewTimelineContent] = useState('');
-  const [newTimelineDate, setNewTimelineDate] = useState('');
-  const [timelines, setTimelines] = useState(timelineData);
   const [loading, setLoading] = useState(true);
   const { accountId } = useParams();
   const [campaignData, setCamapaignData] = useState([]);
   const [content, setContent] = useState('');
   const navigate = useNavigate();
+  const [loadingUpdate, setLoadingUpdate] = useState(false);
 
   const handleCampaignClick = (id) => {
     setSelectedCampaign(id);
@@ -51,6 +28,7 @@ function CampaignTimelinePage() {
 
   const handleAddTimelineEvent = async () => {
     try {
+      setLoadingUpdate(true)
       const response = await fetch('http://localhost:5000/api/campaign-news-add', {
         method: 'POST',
         headers: {
@@ -59,11 +37,14 @@ function CampaignTimelinePage() {
         body: JSON.stringify({ campaignId: selectedCampaign, content }),
       });
       if (response.ok) {
+        setLoadingUpdate(false)
         navigate(0);
       } else {
+        setLoadingUpdate(false)
         const errorData = await response.json();
       }
     } catch (error) {
+      setLoadingUpdate(false)
       console.log(error)
     }
   };
@@ -174,14 +155,16 @@ function CampaignTimelinePage() {
                 onChange={(e) => setContent(e.target.value)}
               />
               <Button variant="text" sx={{
-                width: '20%' ,
+                width: '20%',
                 color: 'white',
                 backgroundColor: '#b58449', // Màu nền
                 '&:hover': {
                   backgroundColor: '#584840', // Màu nền khi hover
                 }
-              }} onClick={handleAddTimelineEvent}>Thêm</Button>
-            </Stack>
+              }} onClick={handleAddTimelineEvent}
+                disabled={loadingUpdate}
+              >{loadingUpdate ? <CircularProgress size={24} color="inherit" /> : 'Thêm'}</Button>
+            </Stack>'
           </Box>
         </Box>
       </Container>

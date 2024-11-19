@@ -16,12 +16,12 @@ async function getDonationByAccountId(accountId) {
 }
 
 async function getDonationByCampaignId(campaignId) {
-    results = await mysql.execSql('SELECT * FROM donation where campaign_id = ?', [campaignId]);
+    results = await mysql.execSql('SELECT donation.*, account.username, account.email FROM donation LEFT JOIN account ON account.id = donation.account_id where campaign_id = ?', [campaignId]);
     return results;
 }
 
 async function getAllDonateAdmin() {
-    results = await mysql.execSql('SELECT donation.*, campaign.name as campaign_name, charity.name as charity_name, account.full_name as account_name FROM donation LEFT JOIN campaign ON donation.campaign_id = campaign.id LEFT JOIN charity ON campaign.charity_id = charity.id LEFT JOIN account ON donation.account_id = account.id');
+    results = await mysql.execSql('SELECT donation.*, campaign.name as campaign_name, charity.name as charity_name, account.full_name as account_name FROM donation LEFT JOIN campaign ON donation.campaign_id = campaign.id LEFT JOIN charity ON campaign.charity_id = charity.id LEFT JOIN account ON donation.account_id = account.id order by donation.status asc, donation.created_at desc');
     return results;
 }
 
@@ -32,8 +32,9 @@ async function updateDonateStatus(id, status) {
 }
 
 async function getDonationById(id) {
-    results = await mysql.execSql('SELECT * FROM donation where id = ?', [id]);
+    results = await mysql.execSql('SELECT donation.*, account.email FROM donation LEFT JOIN account on account.id = donation.account_id where donation.id = ?', [id]);
     return results;
 }
+
 
 module.exports = { saveDonation, getDonationByAccountId, getDonationByCampaignId, getAllDonateAdmin, updateDonateStatus, getDonationById };

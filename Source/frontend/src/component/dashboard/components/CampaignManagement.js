@@ -134,7 +134,7 @@ const UserManagementPage = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="user table">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: '#b58449' }}>
-                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>ID</TableCell>
+                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>STT</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Tên tổ chức</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Tên chiến dịch</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Địa điểm</TableCell>
@@ -144,9 +144,9 @@ const UserManagementPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {campaigns.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((campaign) => (
+                        {campaigns.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((campaign, index) => (
                             <TableRow key={campaign.id}>
-                                <TableCell sx={{ width: '5%' }} align="center">{campaign.id}</TableCell>
+                                <TableCell sx={{ width: '5%' }} align="center">{page * rowsPerPage + index + 1}</TableCell>
                                 <TableCell sx={{ width: '20%' }} align="center">{campaign.charity_name}</TableCell>
                                 <TableCell sx={{ width: '20%' }} align="center">{campaign.name}</TableCell>
                                 <TableCell sx={{ width: '15%' }} align="center">{campaign.location} - {campaign.address}</TableCell>

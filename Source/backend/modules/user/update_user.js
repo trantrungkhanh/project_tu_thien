@@ -9,6 +9,11 @@ router.post('/', async (req, res) => {
     const { account_id, full_name, email } = req.body;
 
     try {
+        userDataByEmail = await accountTable.getUserByEmail(email);
+        if (userDataByEmail.length > 0 && userDataByEmail[0].id != account_id) {
+            return res.status(500).json({ message: 'Email đã tồn tại' });
+        }
+
         await accountTable.updateUserInfo({id: account_id, full_name, email});
         return res.status(200).json({ message: 'Update successfully' });
     } catch (error) {

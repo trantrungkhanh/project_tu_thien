@@ -1,10 +1,7 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
 import CssBaseline from '@mui/material/CssBaseline';
-import Divider from '@mui/material/Divider';
-import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
@@ -14,13 +11,12 @@ import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
-import { GoogleIcon, FacebookIcon, SitemarkIcon } from './CustomIcons';
-import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import { MenuItem, Select } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { auth } from '../../firebase/firebase';
 import { signInWithPhoneNumber, RecaptchaVerifier } from "firebase/auth";
 import Logo from '../../assets/images/logo_new.png';
+import { CircularProgress } from '@mui/material';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -88,6 +84,7 @@ export default function SignUp(props) {
   const [email, setEmail] = React.useState('');
   const [charityName, setCharityName] = React.useState('');
   const [isSignUpSuccess, setIsSignUpSuccess] = React.useState(false);
+  const [loadingSendOtp, setLoadingSendOtp] = React.useState(false);
   const navigate = useNavigate();
 
   const validateInputs = () => {
@@ -121,14 +118,26 @@ export default function SignUp(props) {
       setUsernameErrorMessage('');
     }
 
-    if (!charityName || charityName.length < 1) {
-      setUsernameError(true);
-      setUsernameErrorMessage('Vui lòng nhập tên tổ chức từ thiện.');
+    if (!otp || otp.length < 1) {
+      setOtpError(true);
+      setOtpErrorMessage('Vui lòng nhập OTP');
       isValid = false;
     } else {
-      setUsernameError(false);
-      setUsernameErrorMessage('');
+      setOtpError(false);
+      setOtpErrorMessage('');
     }
+
+    if (role === 'charity') {
+      if (!charityName || charityName.length < 1) {
+        setCharityNameError(true);
+        setcharityNameErrorMessage('Vui lòng nhập tên tổ chức từ thiện.');
+        isValid = false;
+      } else {
+        setCharityNameError(false);
+        setcharityNameErrorMessage('');
+      }
+    }
+
 
     if (!email || !/\S+@\S+\.\S+/.test(email)) {
       setEmailError(true);
@@ -144,7 +153,7 @@ export default function SignUp(props) {
 
 
   const handleSubmit = (event) => {
-    if (nameError || usernameError || passwordError || emailError || charityNameError) {
+    if (nameError || usernameError || passwordError || emailError || charityNameError || otpError) {
       event.preventDefault();
       return;
     }
@@ -181,15 +190,17 @@ export default function SignUp(props) {
   }
 
   const handleSendOtp = async (e) => {
+    setLoadingSendOtp(true)
     const phoneNumberWithCountryCode = countryCode + phoneNumber;
     const appVerifier = window.recaptchaVerifier;
     signInWithPhoneNumber(auth, phoneNumberWithCountryCode, appVerifier)
       .then((confirmationResult) => {
         window.confirmationResult = confirmationResult;
+        setLoadingSendOtp(false)
       }).catch((error) => {
         setOtpError(true);
         setOtpErrorMessage('Có lỗi khi gửi OTP, vui lòng thử lại sau');
-        console.log(error)
+        setLoadingSendOtp(false)
       });
   };
 
@@ -202,7 +213,7 @@ export default function SignUp(props) {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, name, role, password, phoneNumberWithCountryCode, email, charityName}),
+        body: JSON.stringify({ username, name, role, password, phoneNumberWithCountryCode, email, charityName }),
       });
 
       if (response.ok) {
@@ -363,7 +374,7 @@ export default function SignUp(props) {
             <Box display="flex" alignItems="center">
               <TextField
                 label="Nhập OTP"
-                variant="outlined"
+                variant="filled"
                 value={otp}
                 error={otpError}
                 helperText={otpErrorMessage}
@@ -383,8 +394,9 @@ export default function SignUp(props) {
                     backgroundColor: '#584840', // Màu nền khi hover
                   }
                 }}
+                disabled={loadingSendOtp}
               >
-                Gửi OTP
+                {loadingSendOtp ? <CircularProgress size={24} color="inherit" /> : 'Gửi OTP'}
               </Button>
             </Box>
             <Button

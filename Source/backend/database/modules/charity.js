@@ -20,17 +20,17 @@ async function updateStatusCharity(status, id) {
 }
 
 async function getCharityById(charityId) {
-    results = await mysql.execSql('SELECT * FROM charity WHERE id = ?', [charityId]);
+    results = await mysql.execSql('SELECT charity.*, account.email FROM charity left join account on account.id = charity.account_id WHERE charity.id = ?', [charityId]);
     return results;
 }
 
 async function getAllCharity() {
-    results = await mysql.execSql('SELECT * FROM charity where deleted_at IS NULL');
+    results = await mysql.execSql('SELECT * FROM charity where deleted_at IS NULL order by created_at desc');
     return results;
 }
 
 async function getAllCharityAdmin() {
-    results = await mysql.execSql('SELECT charity.*, account.username, account.full_name FROM charity left join account on account.id = charity.account_id');
+    results = await mysql.execSql('SELECT charity.*, account.username, account.full_name FROM charity left join account on account.id = charity.account_id order by charity.status asc, charity.created_at desc');
     return results;
 }
 

@@ -19,6 +19,7 @@ router.post('/', async (req, res) => {
     if (!isPasswordValid) {
         return res.status(500).json({ message: 'Mật khẩu hiện tại không chính xác' , code: 403});
     }
+    
     const newPasswordHash = bcrypt.hashSync(password, 8)
 
     try {

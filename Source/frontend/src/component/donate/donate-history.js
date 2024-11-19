@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import callProtectedApi from '../../services/ProtectedApi';
 import CssBaseline from '@mui/material/CssBaseline';
 import { Container } from '@mui/material';
+import { formatCurrency, formatDateTime } from '../../services/Ultis'
 
 const DonationHistory = () => {
   // Giả sử bạn đã có dữ liệu từ API
@@ -113,7 +114,7 @@ const DonationHistory = () => {
                     <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Tổ chức: </span> {donation.charity_name}
                     </Typography>
                     <Typography variant="body2" color="text.primary">
-                    <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Số tiền: </span> {donation.amount} VND
+                    <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Số tiền: </span> {formatCurrency(donation.amount)}
                     </Typography>
                     <Typography variant="body2" color="text.primary">
                     <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Hình thức: </span> {transferTypeMap[donation.transfer_type] || 'Chưa xác định'}
@@ -122,7 +123,7 @@ const DonationHistory = () => {
                     <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Trạng thái: </span> {statusMap[donation.status] || 'Chưa xác định'}
                     </Typography>
                     <Typography variant="body2" color="text.primary">
-                    <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Ngày: </span> {new Date(donation.created_at).toLocaleDateString()} {new Date(donation.created_at).toLocaleTimeString()}
+                    <span style={{ fontWeight: 'bold', fontSize: '1.0rem' }}>Ngày: </span> {formatDateTime(donation.created_at)}
                     </Typography>
                   </CardContent>
                 </Card>

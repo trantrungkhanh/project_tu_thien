@@ -90,7 +90,6 @@ export default function MarketingPage(props) {
                 if (response.ok) {
                     const data = await response.json();
                     setCharityData(data.data.charity_list)
-                    console.log(data.data.charity_list)
                     setFaqData(data.data.faq_list)
                     setArticles(data.data.articles)
                     setLoading(false)
@@ -129,9 +128,6 @@ export default function MarketingPage(props) {
                         ) : (
                             <div>No data available</div>  // Hiển thị thông báo khi dữ liệu chưa có
                         )}
-                        <div ref={chartRef}>
-                            <Features />
-                        </div>
                         <Divider />
                         {charityData ? (
                             <div ref={testimonialsRef}>

@@ -62,7 +62,7 @@ const Report = ({ campaign }) => {
             {campaign.campaign_donation.map((donor, index) => (
               <tr key={index}>
                 <td style={styles.td}>{index + 1}</td>
-                <td style={styles.td}>{donor.account_id}</td>
+                <td style={styles.td}>{donor.username}</td>
                 <td style={styles.td}>{formatCurrency(donor.amount)}</td>
                 <td style={styles.td}>{formatDateTime(donor.created_at)}</td>
               </tr>

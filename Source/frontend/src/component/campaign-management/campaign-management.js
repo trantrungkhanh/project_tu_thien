@@ -9,6 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 
 const CampaignManagementPage = () => {
@@ -64,7 +65,10 @@ const CampaignManagementPage = () => {
     const handleDelete = (campaignId) => {
         setOpen(true);
         setDeletedId(campaignId)
-        //setCampaigns(campaigns.filter(campaign => campaign.id !== id));
+    };
+
+    const handleViewDetail = (campaignId) => {
+        navigate(`/campaign-detail/${campaignId}`);
     };
 
     const handleEdit = (screenEdit, campaignId) => {
@@ -474,13 +478,16 @@ const CampaignManagementPage = () => {
                                             <TableCell sx={{ width: '20%' }} align="center">{campaign.name}</TableCell>
                                             <TableCell sx={{ width: '20%' }} align="center">{campaign.location} - {campaign.address}</TableCell>
                                             <TableCell sx={{ width: '10%' }} align="center">{formatCurrency(campaign.budget_requirement)}</TableCell>
-                                            <TableCell sx={{ width: '15%' }} align="center">{status[campaign.status] || 'Chưa xác định'}</TableCell>
-                                            <TableCell sx={{ width: '15%' }} align="center">
+                                            <TableCell sx={{ width: '10%' }} align="center">{status[campaign.status] || 'Chưa xác định'}</TableCell>
+                                            <TableCell sx={{ width: '20%' }} align="center">
                                                 <IconButton color="primary" onClick={() => handleEdit('editCampaign', campaign.id)}>
                                                     <EditIcon />
                                                 </IconButton>
                                                 <IconButton color="secondary" onClick={() => handleDelete(campaign.id)}>
                                                     <DeleteIcon />
+                                                </IconButton>
+                                                <IconButton color="secondary" onClick={() => handleViewDetail(campaign.id)}>
+                                                    <RemoveRedEyeSharpIcon />
                                                 </IconButton>
                                             </TableCell>
                                         </TableRow>

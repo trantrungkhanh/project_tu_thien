@@ -4,6 +4,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import AttachMoneySharpIcon from '@mui/icons-material/AttachMoneySharp';
 import { formatCurrency, formatDateTime } from '../../../services/Ultis'
+import { CircularProgress } from '@mui/material';
 
 
 const UserManagementPage = () => {
@@ -12,6 +13,7 @@ const UserManagementPage = () => {
     const [rowsPerPage, setRowsPerPage] = useState(5);
     const [loading, setLoading] = useState(true);
     const [reload, setReload] = useState(false);
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
 
     const statusMap = {
         0: 'Đang chờ xử lý',
@@ -27,20 +29,23 @@ const UserManagementPage = () => {
 
     const handleEdit = async (status, id) => {
         try {
+            setLoadingUpdate(true)
             const response = await fetch('http://localhost:5000/api/admin/update-donation', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': localStorage.getItem("token"),
                 },
-                body: JSON.stringify({ donate_id: id, status}),
+                body: JSON.stringify({ donate_id: id, status }),
             });
 
             if (response.ok) {
+                setLoadingUpdate(false)
                 setReload(!reload);
             }
         } catch (error) {
             console.error('Error:', error);
+            setLoadingUpdate(false)
         }
     };
 
@@ -88,13 +93,13 @@ const UserManagementPage = () => {
     return (
         <Box sx={{ padding: 3, width: '100%', maxWidth: { sm: '100%', md: '1700px' } }}>
             <Typography variant="h4" gutterBottom>
-                Quản lý tổ chức từ thiện
+                Quản lý quyên góp
             </Typography>
             <TableContainer component={Paper} sx={{ width: '100%' }}>  {/* Đảm bảo bảng chiếm hết chiều rộng */}
                 <Table sx={{ minWidth: 650 }} aria-label="user table">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: '#b58449' }}>
-                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>ID</TableCell>
+                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>STT</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Người quyên góp</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Tên tổ chức</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Tên chiến dịch</TableCell>
@@ -105,9 +110,9 @@ const UserManagementPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {donates.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((donate) => (
+                        {donates.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((donate, index) => (
                             <TableRow key={donate.id}>
-                                <TableCell sx={{ width: '2%' }} align="center">{donate.id}</TableCell>
+                                <TableCell sx={{ width: '2%' }} align="center">{page * rowsPerPage + index + 1}</TableCell>
                                 <TableCell sx={{ width: '15%' }} align="center">{donate.account_name}</TableCell>
                                 <TableCell sx={{ width: '15%' }} align="center">{donate.charity_name}</TableCell>
                                 <TableCell sx={{ width: '15%' }} align="center">{donate.campaign_name}</TableCell>
@@ -116,8 +121,8 @@ const UserManagementPage = () => {
                                 <TableCell sx={{ width: '10%' }} align="center">{statusMap[donate.status] || 'Chưa xác định'}</TableCell>
                                 <TableCell sx={{ width: '10%' }} align="center">
                                     {donate.status === 0 && (
-                                        <IconButton color="primary" onClick={() => handleEdit(1, donate.id)}>
-                                            <AttachMoneySharpIcon />
+                                        <IconButton color="primary" onClick={() => handleEdit(1, donate.id)} disabled={loadingUpdate}>
+                                            {loadingUpdate ? <CircularProgress size={24} color="inherit" /> : <AttachMoneySharpIcon />}
                                         </IconButton>
                                     )}
 

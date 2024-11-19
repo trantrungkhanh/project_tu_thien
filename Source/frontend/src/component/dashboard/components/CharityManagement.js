@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CheckBoxIcon from '@mui/icons-material/CheckBox';
 import DoDisturbIcon from '@mui/icons-material/DoDisturb';
-
+import { CircularProgress } from '@mui/material';
 
 
 const UserManagementPage = () => {
@@ -16,6 +16,8 @@ const UserManagementPage = () => {
     const [open, setOpen] = useState(false); // State to control Dialog visibility
     const [imageSrc, setImageSrc] = useState(''); // State to hold image URL
     const [reload, setReload] = useState(false);
+    const [loadingUpdate, setLoadingUpdate] = useState(false);
+
 
 
     const status = {
@@ -26,19 +28,22 @@ const UserManagementPage = () => {
 
     const handleUpdateStatus = async (status, charity_id) => {
         try {
+            setLoadingUpdate(true)
             const response = await fetch('http://localhost:5000/api/admin/update-status-charity', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': localStorage.getItem("token"),
                 },
-                body: JSON.stringify({status, charity_id}),
+                body: JSON.stringify({ status, charity_id }),
             });
 
             if (response.ok) {
+                setLoadingUpdate(false)
                 setReload(!reload);
             }
         } catch (error) {
+            setLoadingUpdate(false)
             console.error('Error:', error);
         }
     };
@@ -105,7 +110,7 @@ const UserManagementPage = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="user table">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: '#b58449' }}>
-                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>ID</TableCell>
+                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>STT</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Người tạo</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Tên tổ chức</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Giấy phép</TableCell>
@@ -114,9 +119,9 @@ const UserManagementPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {charities.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((charity) => (
+                        {charities.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((charity, index) => (
                             <TableRow key={charity.id}>
-                                <TableCell sx={{ width: '10%' }} align="center">{charity.id}</TableCell>
+                                <TableCell sx={{ width: '10%' }} align="center">{page * rowsPerPage + index + 1}</TableCell>
                                 <TableCell sx={{ width: '20%' }} align="center">{charity.full_name}</TableCell>
                                 <TableCell sx={{ width: '30%' }} align="center">{charity.name}</TableCell>
                                 <TableCell sx={{ width: '10%' }} align="center">{/* IconButton with VisibilityIcon to view the file */}
@@ -125,12 +130,17 @@ const UserManagementPage = () => {
                                     </IconButton></TableCell>
                                 <TableCell sx={{ width: '10%' }} align="center">{status[charity.status] || 'Chưa xác định'}</TableCell>
                                 <TableCell sx={{ width: '15%' }} align="center">
-                                    <IconButton disabled={charity.status === 1 } color="primary" onClick={() => handleUpdateStatus(1, charity.id)}>
-                                        <CheckBoxIcon sx={{color: (charity.status === 1) ? 'gray' : 'green'}}/>
-                                    </IconButton>
-                                    <IconButton disabled={charity.status === 2 } color="secondary" onClick={() => handleUpdateStatus(2, charity.id)}>
-                                        <DoDisturbIcon sx={{color: (charity.status === 2) ? 'gray' : 'red'}}/>
-                                    </IconButton>
+                                    {loadingUpdate ? <CircularProgress size={24} color="inherit" /> : (
+                                        <>
+                                            <IconButton disabled={charity.status === 1} color="primary" onClick={() => handleUpdateStatus(1, charity.id)}>
+                                                <CheckBoxIcon sx={{ color: (charity.status === 1) ? 'gray' : 'green' }} />
+                                            </IconButton>
+                                            <IconButton disabled={charity.status === 2} color="secondary" onClick={() => handleUpdateStatus(2, charity.id)}>
+                                                <DoDisturbIcon sx={{ color: (charity.status === 2) ? 'gray' : 'red' }} />
+                                            </IconButton>
+                                        </>
+                                    )}
+
                                 </TableCell>
                             </TableRow>
                         ))}

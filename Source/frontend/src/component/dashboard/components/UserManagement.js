@@ -109,7 +109,7 @@ const UserManagementPage = () => {
                 <Table sx={{ minWidth: 650 }} aria-label="user table">
                     <TableHead>
                         <TableRow sx={{ backgroundColor: '#b58449' }}>
-                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>ID</TableCell>
+                            <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>STT</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Tài khoản</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Họ và tên</TableCell>
                             <TableCell align="center" sx={{ fontSize: '1.1rem', fontWeight: 'bold' }}>Vai trò</TableCell>
@@ -118,9 +118,9 @@ const UserManagementPage = () => {
                         </TableRow>
                     </TableHead>
                     <TableBody>
-                        {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user) => (
+                        {users.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((user, index) => (
                             <TableRow key={user.id}>
-                                <TableCell sx={{ width: '10%' }} align="center">{user.id}</TableCell>
+                                <TableCell sx={{ width: '10%' }} align="center">{page * rowsPerPage + index + 1}</TableCell>
                                 <TableCell sx={{ width: '25%' }} align="center">{user.username}</TableCell>
                                 <TableCell sx={{ width: '35%' }} align="center">{user.full_name}</TableCell>
                                 <TableCell sx={{ width: '10%' }} align="center">{role[user.role] || 'Chưa xác định'}</TableCell>

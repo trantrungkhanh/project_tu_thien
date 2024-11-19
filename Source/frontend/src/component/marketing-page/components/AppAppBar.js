@@ -180,9 +180,9 @@ export default function AppAppBar({ onCharityClick, onChartClick, onTestimonialC
               <Button variant="text" color="info" size="medium" onClick={onCharityClick} sx={{ fontWeight: 'bold' }}>
                 Tổ chức từ thiện
               </Button>
-              <Button variant="text" color="info" size="medium" onClick={onChartClick} sx={{ fontWeight: 'bold' }}>
+              {/* <Button variant="text" color="info" size="medium" onClick={onChartClick} sx={{ fontWeight: 'bold' }}>
                 Tình hình quyên góp
-              </Button>
+              </Button> */}
               <Button variant="text" color="info" size="medium" onClick={onTestimonialClick} sx={{ fontWeight: 'bold' }}>
                 Đánh giá
               </Button>
@@ -221,7 +221,9 @@ export default function AppAppBar({ onCharityClick, onChartClick, onTestimonialC
                   }}
                 >
                   <MenuItem onClick={() => { /* Navigate to profile */ handleProfilePage(); }}>Hồ sơ cá nhân</MenuItem>
-                  <MenuItem onClick={() => { /* Navigate to settings */ handleDonateHistoryPage(); }}>Lịch sử quyên góp</MenuItem>
+                  {userInfo.role === 'contributor' && (
+                    <MenuItem onClick={() => { /* Navigate to settings */ handleDonateHistoryPage(); }}>Lịch sử quyên góp</MenuItem>
+                  )}
                   {userInfo.role === 'charity' && isCharityLive ? (
                     <>
                       <MenuItem onClick={() => { /* Navigate to settings */ handlCampaignManagementPage(); }}>Quản lí chiến dịch</MenuItem>

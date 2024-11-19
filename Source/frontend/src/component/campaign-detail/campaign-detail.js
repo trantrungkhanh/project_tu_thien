@@ -27,7 +27,6 @@ const data = {};
 function ImageSlider() {
     const [currentImage, setCurrentImage] = useState(0);
 
-
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentImage((prevImage) => (prevImage + 1) % images.length);
@@ -79,6 +78,7 @@ export default function CampaignDetail() {
     const [rating, setRating] = React.useState(0);
     const [comment, setComment] = React.useState('');
     const [accountId, setAccountId] = React.useState('');
+    const [isContributor, setIsContributor] = useState(false);
     const navigate = useNavigate();
 
     const handleDonate = (campaignId) => {
@@ -114,7 +114,7 @@ export default function CampaignDetail() {
 
         ReactDOM.render(
             <PDFExport ref={pdfExportComponent} paperSize="A4">
-                <Report campaign={campaignData}/>
+                <Report campaign={campaignData} />
             </PDFExport>,
             container,
             () => {
@@ -130,6 +130,9 @@ export default function CampaignDetail() {
         if (token) {
             setIsLoggedIn(true);
             const userInfo = JSON.parse(localStorage.getItem('user_info'));
+            if (userInfo.role === 'contributor') {
+                setIsContributor(true)
+            }
             setAccountId(userInfo.id)
         }
         // Gọi API khi component được render
@@ -224,15 +227,23 @@ export default function CampaignDetail() {
                                 ))}
                             </Timeline>
                             {isLoggedIn ? (
-                                <Button variant="text" size="large" onClick={() => handleDonate(campaignData.id)} sx={{
-                                    color: 'white',
-                                    backgroundColor: '#b58449', // Màu nền
-                                    '&:hover': {
-                                        backgroundColor: '#584840', // Màu nền khi hover
-                                    }
-                                }}>
-                                    Quyên góp
-                                </Button>
+                                <>
+                                    {isContributor ? (
+                                        <Button variant="text" size="large" onClick={() => handleDonate(campaignData.id)} sx={{
+                                            color: 'white',
+                                            backgroundColor: '#b58449', // Màu nền
+                                            '&:hover': {
+                                                backgroundColor: '#584840', // Màu nền khi hover
+                                            }
+                                        }}>
+                                            Quyên góp
+                                        </Button>
+                                    ) : (
+                                        null
+                                    )}
+                                </>
+
+
                             ) : (
                                 <Typography variant="body2" color="text.secondary" sx={{ mb: 4 }}>
                                     Vui lòng đăng nhập để quyên góp

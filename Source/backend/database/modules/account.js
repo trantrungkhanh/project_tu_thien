@@ -32,13 +32,23 @@ async function getUser(username) {
     return results;
 }
 
+async function getUserByEmail(email) {
+    results = await mysql.execSql('SELECT * FROM account WHERE email = ?', [email]);
+    return results;
+}
+
+async function getUserByPhone(phone) {
+    results = await mysql.execSql('SELECT * FROM account WHERE phone = ?', [phone]);
+    return results;
+}
+
 async function getUserByAccountId(accountId) {
     results = await mysql.execSql('SELECT * FROM account WHERE id = ?', [accountId]);
     return results;
 }
 
 async function getAllUser() {
-    results = await mysql.execSql('SELECT * FROM account');
+    results = await mysql.execSql('SELECT * FROM account order by deleted_at asc, created_at desc');
     return results;
 }
 
@@ -48,4 +58,4 @@ async function deleteAccount(account_id) {
 }
 
 
-module.exports = { saveUser, getUser, getAllUser, updatePassword, getUserByAccountId, updatePasswordByAccountId, updateUserInfo, deleteAccount};
+module.exports = { saveUser, getUser, getAllUser, updatePassword, getUserByAccountId, updatePasswordByAccountId, updateUserInfo, deleteAccount, getUserByEmail, getUserByPhone};

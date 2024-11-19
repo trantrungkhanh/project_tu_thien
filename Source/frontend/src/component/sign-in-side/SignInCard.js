@@ -80,8 +80,7 @@ export default function SignInCard() {
           localStorage.setItem('user_info', JSON.stringify(data.user_info))
           localStorage.setItem('token_expiry', expirationTime.toString());
           const prevLocation = localStorage.getItem("prev_location");
-          console.log(prevLocation)
-          if (prevLocation !== '/home') {
+          if (prevLocation !== '/home' && prevLocation) {
             navigate(prevLocation)
           } else {
             if (data.user_info.role === 'admin') {

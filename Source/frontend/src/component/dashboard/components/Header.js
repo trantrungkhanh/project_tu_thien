@@ -23,11 +23,6 @@ export default function Header(selectedContent) {
       spacing={2}
     >
       <NavbarBreadcrumbs data={selectedContent.data}/>
-      <Stack direction="row" sx={{ gap: 1 }}>
-        <MenuButton showBadge aria-label="Open notifications">
-          <NotificationsRoundedIcon />
-        </MenuButton>
-      </Stack>
     </Stack>
   );
 }
