@@ -71,6 +71,30 @@ const Report = ({ campaign }) => {
         </table>
       </div>
 
+      <div style={styles.donors}>
+        <h2>Đánh giá của người dùng</h2>
+        <table style={styles.table}>
+          <thead>
+            <tr>
+              <th style={styles.th}>STT</th>
+              <th style={styles.th}>Tên người dùng</th>
+              <th style={styles.th}>Đánh giá</th>
+              <th style={styles.th}>Bình luận</th>
+            </tr>
+          </thead>
+          <tbody>
+            {campaign.campaign_rating.map((rating, index) => (
+              <tr key={index}>
+                <td style={styles.td}>{index + 1}</td>
+                <td style={styles.td}>{rating.username}</td>
+                <td style={styles.td}>{rating.rating} Sao </td>
+                <td style={styles.td}>{rating.comment}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
       {/* Summary */}
       <div style={styles.summary}>
         <h3>Tóm tắt</h3>
