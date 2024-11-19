@@ -36,6 +36,7 @@
             + QUản lí tổ chức từ thiện (Chuyển đổi trạng thái của tổ chức: Đang hoạt động - Dừng hoạt động)
             + Quản lí quyên góp (Xác nhận quyên góp)
     3. Màn hình home:
+        - Chuyển đổi theme sáng/tối
         - Danh sách các chiến dịch, tổ chức từ thiện
         - Đánh giá của người dùng
         - Bản tin sẽ được lấy và cập nhật theo nguồn: nhandan.vn
