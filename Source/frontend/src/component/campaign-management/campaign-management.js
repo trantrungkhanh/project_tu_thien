@@ -11,6 +11,7 @@ import EditIcon from '@mui/icons-material/Edit'
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import RemoveRedEyeSharpIcon from '@mui/icons-material/RemoveRedEyeSharp';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import CloseIcon from '@mui/icons-material/Close';
 
 const CampaignManagementPage = () => {
     const [selectedMenu, setSelectedMenu] = useState('addCampaign');
@@ -43,6 +44,7 @@ const CampaignManagementPage = () => {
     const [selectedDateEndUpdate, setSelectedDateEndUpdate] = useState('');
     const [loadingUpdateCampaign, setLoadingUpdateCampaign] = useState(false);
     const [loadingPageEdit, setLoadingPageEdit] = useState(true);
+    const [errorUploadMessage, setErrorUploadMessage] = useState('');
     // Hàm để xử lý khi nhấn vào menu
     const handleMenuClick = (menu) => {
         setSelectedMenu(menu);
@@ -108,6 +110,10 @@ const CampaignManagementPage = () => {
         }
     };
 
+    const handleRemoveImage = (indexToRemove) => {
+        setImagePreviews((prev) => prev.filter((_, index) => index !== indexToRemove));
+    };
+
     const handleDeleteCampaign = async (campaignId) => {
         try {
             const response = await fetch('http://localhost:5000/api/campaign-delete', {
@@ -130,6 +136,10 @@ const CampaignManagementPage = () => {
     }
 
     const handleFileUpload = async () => {
+        if (imagePreviews.length <= 0) {
+            setErrorUploadMessage('Cần tải lên hình ảnh chiến dịch')
+            return;
+        }
         const formData = new FormData();
         files.forEach((file) => formData.append('files', file));  // Thêm từng file vào FormData với cùng key 'files'
         formData.append('name', name);
@@ -201,21 +211,21 @@ const CampaignManagementPage = () => {
     }
 
     const handleFileChange = (event) => {
-        // event.target.files là mảng các file được chọn
         const selectedFiles = event.target.files;
         if (selectedFiles) {
-            // Chuyển FileList thành array và thay đổi tên tệp
-            const updatedFiles = Array.from(selectedFiles).map(file => {
-                // Thêm timestamp vào tên file để đảm bảo không bị trùng
+            // Chuyển FileList thành array và thêm tên file duy nhất
+            const updatedFiles = Array.from(selectedFiles).map((file) => {
                 const uniqueId = uuidv4();
-                const newFileName = `${Date.now()}-${uniqueId}`;
-                const updatedFile = new File([file], newFileName, { type: file.type });
-                return updatedFile;
+                const newFileName = `${Date.now()}-${uniqueId}-${file.name}`;
+                return new File([file], newFileName, { type: file.type });
             });
-            setFiles(updatedFiles);
 
-            const previews = updatedFiles.map((file) => URL.createObjectURL(file));
-            setImagePreviews(previews);
+            // Cập nhật danh sách file mà không ghi đè danh sách cũ
+            setFiles((prevFiles) => [...prevFiles, ...updatedFiles]);
+
+            // Cập nhật danh sách ảnh xem trước
+            const newPreviews = updatedFiles.map((file) => URL.createObjectURL(file));
+            setImagePreviews((prevPreviews) => [...prevPreviews, ...newPreviews]);
         }
     };
 
@@ -430,16 +440,48 @@ const CampaignManagementPage = () => {
                                 <Typography variant="body1">Hình ảnh đã chọn:</Typography>
                                 <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 1 }}>
                                     {imagePreviews.map((preview, index) => (
-                                        <Box key={index} sx={{ width: '100px', height: '100px', position: 'relative' }}>
+                                        <Box
+                                            key={index}
+                                            sx={{
+                                                width: '100px',
+                                                height: '100px',
+                                                position: 'relative',
+                                            }}
+                                        >
                                             <img
                                                 src={preview}
                                                 alt={`preview-${index}`}
-                                                style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                                style={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    objectFit: 'cover',
+                                                    borderRadius: '8px',
+                                                }}
                                             />
+                                            <IconButton
+                                                onClick={() => handleRemoveImage(index)}
+                                                sx={{
+                                                    position: 'absolute',
+                                                    top: '-10px',
+                                                    right: '-10px',
+                                                    backgroundColor: 'white',
+                                                    zIndex: 1,
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                                                    },
+                                                }}
+                                            >
+                                                <CloseIcon color="error" />
+                                            </IconButton>
                                         </Box>
                                     ))}
                                 </Box>
                             </Box>
+                        )}
+                        {errorUploadMessage && (
+                            <>
+                                <p style={{color:'red'}}>{errorUploadMessage}</p>
+                            </>
                         )}
                         <Button variant="text" sx={{
                             mt: 2,

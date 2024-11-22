@@ -19,8 +19,10 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.post('/', upload.array('files', 10), async (req, res) => {
-    const imagePaths = req.files.map(file => `/uploads/${file.filename}`);
-
+    imagePaths = [];
+    if (req.files !== undefined && req.files !== null) {
+        imagePaths = req.files.map(file => `/uploads/${file.filename}`);
+    }
     // find charity by account_id
     const charity = await charityTable.getCharityByAccountId(req.body.account_id)
     if (charity[0]) {

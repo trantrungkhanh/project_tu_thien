@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
-import { Box, Typography, Button, TextField, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { Box, Typography, Button, TextField, Select, MenuItem, FormControl, InputLabel, IconButton, colors } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import callProtectedApi from '../../services/ProtectedApi';
 import { CircularProgress } from '@mui/material';
 import { BanksObject } from 'vietnam-qr-pay';
+import CloseIcon from '@mui/icons-material/Close';
 
 const ProfileEditPage = () => {
     const [selectedMenu, setSelectedMenu] = useState('personalInfo');
@@ -26,6 +27,8 @@ const ProfileEditPage = () => {
     const [charityData, setCharityData] = React.useState('');
     const [isCharity, setIsCharity] = React.useState(true);
     const [countdown, setCountdown] = useState(5);
+    const [errorUploadMessage, setErrorUploadMessage] = useState('');
+    const [isError, setIsError] = useState(false)
     const navigate = useNavigate();
 
     const { accountId } = useParams();
@@ -52,6 +55,11 @@ const ProfileEditPage = () => {
     };
 
     const handleFileUpload = async () => {
+        if (imagePreviews == null) {
+            setIsError(true)
+            setErrorUploadMessage('Cần tải lên hình ảnh giấy phép hoạt động')
+            return;
+        }
         const formData = new FormData();
         formData.append('name', charityName);
         formData.append('file', files)
@@ -70,6 +78,8 @@ const ProfileEditPage = () => {
 
             if (response.ok) {
                 const result = await response.json();
+                setIsError(false)
+                setErrorUploadMessage('Cập nhật thông tin thành công!')
             } else {
                 console.error('Upload failed');
             }
@@ -174,6 +184,10 @@ const ProfileEditPage = () => {
 
     }
 
+    const handleRemoveImage = (indexToRemove) => {
+        setImagePreviews(null);
+    };
+
     React.useEffect(() => {
         const callAuthenApi = async () => {
             const isAuthen = await callProtectedApi(accountId);
@@ -211,6 +225,7 @@ const ProfileEditPage = () => {
                     setBankAccount(data.data.charity[0].bank_account)
                     setMomoAccount(data.data.charity[0].momo_account)
                     setSelectedBank(data.data.charity[0].bank)
+                    setImagePreviews(data.data.charity[0].file)
                     setLoading(false);
                 } else {
                     const errorData = await response.json();
@@ -463,6 +478,7 @@ const ProfileEditPage = () => {
                                 Tải lên hình ảnh giấy phép hoạt động
                             </Typography>
                             <input
+                                required
                                 type="file"
                                 accept="image/*"
                                 onChange={handleFileChange}
@@ -477,17 +493,55 @@ const ProfileEditPage = () => {
                         {imagePreviews !== null && (
                             <Box sx={{ mt: 2 }}>
                                 <Typography variant="body1">Hình ảnh đã chọn:</Typography>
-                                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 1 }}>
+                                <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', mt: 1, position: 'relative' }}>
                                     <Box sx={{ width: '100px', height: '100px', position: 'relative' }}>
+                                        {/* Nút X để xóa ảnh */}
+                                        <Box
+                                            sx={{
+                                                position: 'absolute',
+                                                top: '-8px',
+                                                right: '-8px',
+                                                background: '#ff4d4d',
+                                                color: '#fff',
+                                                borderRadius: '50%',
+                                                width: '20px',
+                                                height: '20px',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                justifyContent: 'center',
+                                                cursor: 'pointer',
+                                                fontWeight: 'bold',
+                                                zIndex: 2,
+                                            }}
+                                            onClick={() => setImagePreviews(null)} // Xóa ảnh
+                                        >
+                                            X
+                                        </Box>
                                         <img
                                             src={imagePreviews}
-                                            style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '8px' }}
+                                            style={{
+                                                width: '100%',
+                                                height: '100%',
+                                                objectFit: 'cover',
+                                                borderRadius: '8px',
+                                            }}
+                                            alt="preview"
                                         />
                                     </Box>
                                 </Box>
                             </Box>
                         )}
 
+                        {isError ? (
+                            <>
+                                <p style={{color:'red'}}>{errorUploadMessage}</p>
+                            </>
+
+                        ) : (
+                            <>
+                                <p style={{color:'green'}}>{errorUploadMessage}</p>
+                            </>
+                        )}
                         <Button variant="text" sx={{
                             mt: 2,
                             color: 'white',

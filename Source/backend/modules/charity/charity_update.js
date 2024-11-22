@@ -29,7 +29,10 @@ router.post('/', upload.single('file'), async (req, res) => {
 
     const { name , bank, bankAccount, momoAccount} = req.body;
     const charity = await charityTable.getCharityByAccountId(req.body.accountId)
-    const imagePath = `/uploads/charity/${req.file.filename}`;
+    imagePath = charity[0].file;
+    if (req.file !== undefined && req.file !== null) {
+        imagePath = `/uploads/charity/${req.file.filename}`;
+    }
     // find charity by account_id
     await charityTable.updateCharity({name, file: imagePath, id: charity[0].id, status: charity[0].status, bank, bankAccount, momoAccount})
 
